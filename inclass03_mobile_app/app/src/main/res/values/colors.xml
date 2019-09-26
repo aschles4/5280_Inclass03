@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F93F4</color>
+    <color name="colorPrimaryDark">#3F93F4</color>
+    <color name="colorAccent">#62A9FA</color>
+    <color name="colorPrimaryLight">#E0EEFF</color>
+    <color name="background">#FAFAFA</color>
+    <color name="common_google_signin_btn_text_dark_pressed">#3F93F4</color>
+</resources>

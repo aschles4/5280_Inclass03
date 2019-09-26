@@ -1,0 +1,175 @@
+{
+	"info": {
+		"name": "App",
+		"_postman_id": "34b44fd5-a011-f4c4-80ef-bab6c2888488",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"a@a.com\",\n  \"password\": \"asdfadsfasdfsd\"\n}"
+				},
+				"url": {
+					"raw": "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login",
+					"protocol": "https",
+					"host": [
+						"ooelz49nm4",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"login"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "EditProfile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token\": \"1RLSOQHvu0yGjC4CSN6FYcLoS3t\",\n  \"firstName\": \"example+001@example.com\",\n  \"lastName\": \"example+001@example.com\",\n  \"age\": 30,\n  \"weight\": 200,\n  \"address\": \"Testing\",\n  \"email\": \"example+001@example.com\",\n  \"password\": \"test\"\n}"
+				},
+				"url": {
+					"raw": "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/editProfile",
+					"protocol": "https",
+					"host": [
+						"ooelz49nm4",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"editProfile"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"example+020@example.com\",\n    \"password\": \"test\",\n    \"firstName\": \"Andrew\",\n    \"lastName\": \"Schlesinger\",\n    \"age\": 24,\n    \"weight\": 225,\n    \"address\": \"testing ave\"\n  }"
+				},
+				"url": {
+					"raw": "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/signup",
+					"protocol": "https",
+					"host": [
+						"ooelz49nm4",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"signup"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token\": \"1RLs1d7UDUdeORx28bBr8kdXsbj\"\n}"
+				},
+				"url": {
+					"raw": "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/logout",
+					"protocol": "https",
+					"host": [
+						"ooelz49nm4",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"logout"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "FindUserProfile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token\": \"1RLs1d7UDUdeORx28bBr8kdXsbj\"\n}"
+				},
+				"url": {
+					"raw": "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProfile",
+					"protocol": "https",
+					"host": [
+						"ooelz49nm4",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"default",
+						"findProfile"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
