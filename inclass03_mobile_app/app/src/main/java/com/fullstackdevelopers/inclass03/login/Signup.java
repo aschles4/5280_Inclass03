@@ -21,18 +21,22 @@ import com.fullstackdevelopers.inclass03.dto.LoginResponse;
 import com.fullstackdevelopers.inclass03.dto.SignupRequest;
 import com.fullstackdevelopers.inclass03.profile.ProfileView;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.sql.Time;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class Signup extends Fragment {
@@ -108,15 +112,14 @@ public class Signup extends Fragment {
                                     .post(requestBody)
                                     .build();
 
-
                             client.newCall(request).enqueue(new Callback() {
                                 @Override
-                                public void onFailure(Request request, IOException e) {
+                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                                     Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
-                                public void onResponse(Response response) throws IOException {
+                                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                     if (!response.isSuccessful()) {
                                         throw new IOException("Unexpected code " + response);
                                     } else {
@@ -162,7 +165,64 @@ public class Signup extends Fragment {
 
                                     }
                                 }
+
                             });
+
+
+//                            client.newCall(request).enqueue(new Callback() {
+//                                @Override
+//                                public void onFailure(Request request, IOException e) {
+//                                    Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+//                                }
+//
+//                                @Override
+//                                public void onResponse(Response response) throws IOException {
+//                                    if (!response.isSuccessful()) {
+//                                        throw new IOException("Unexpected code " + response);
+//                                    } else {
+//                                        //TODO insert login call here
+////                                        final LoginRequest loginRequest = new LoginRequest();
+////                                        loginRequest.setEmail(e);
+////                                        loginRequest.setPassword(p);
+////
+////                                        RequestBody requestBody2 = RequestBody.create(MediaType.parse("application/json"), gson.toJson(loginRequest));
+////                                        Request request2 = new Request.Builder()
+////                                                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login")
+////                                                .post(requestBody2)
+////                                                .build();
+////
+////
+////                                        client.newCall(request2).enqueue(new Callback() {
+////                                            @Override
+////                                            public void onFailure(Request request, IOException e) {
+////                                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+////                                            }
+////
+////                                            @Override
+////                                            public void onResponse(Response response) throws IOException {
+////                                                if (!response.isSuccessful()) {
+////                                                    throw new IOException("Unexpected code " + response);
+////                                                } else {
+////                                                    //TODO PUSH TO PROFILE PAGE
+////
+////                                                    LoginResponse loginResponse = gson.fromJson(response.body().string(), LoginResponse.class);
+////                                                    Log.d("test", loginResponse.toString());
+////                                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+////                                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
+////                                                    getActivity().startActivity(myIntent);
+////                                                }
+////                                            }
+////                                        });
+//
+//                                        getActivity().runOnUiThread(new Runnable() {
+//                                            public void run() {
+//                                                Toast.makeText(getContext(), "User Signed Up Successfully", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        });
+//
+//                                    }
+//                                }
+//                            });
                         } else {
                             Toast.makeText(getContext(), "Password  mismatch", Toast.LENGTH_SHORT).show();
                             password.setText("");

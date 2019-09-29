@@ -12,19 +12,24 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.R;
+import com.fullstackdevelopers.inclass03.cart.Cart;
 import com.fullstackdevelopers.inclass03.dto.LoginRequest;
 import com.fullstackdevelopers.inclass03.dto.LoginResponse;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import java.io.IOException;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class Login extends Fragment {
@@ -83,15 +88,14 @@ public class Login extends Fragment {
                                 .post(requestBody)
                                 .build();
 
-
                         client.newCall(request).enqueue(new Callback() {
                             @Override
-                            public void onFailure(Request request, IOException e) {
+                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                                 Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
-                            public void onResponse(Response response) throws IOException {
+                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                 if (!response.isSuccessful()) {
                                     throw new IOException("Unexpected code " + response);
                                 } else {
@@ -104,6 +108,28 @@ public class Login extends Fragment {
                                 }
                             }
                         });
+
+
+//                        client.newCall(request).enqueue(new Callback() {
+//                            @Override
+//                            public void onFailure(Request request, IOException e) {
+//                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            @Override
+//                            public void onResponse(Response response) throws IOException {
+//                                if (!response.isSuccessful()) {
+//                                    throw new IOException("Unexpected code " + response);
+//                                } else {
+//                                    String resp =  response.body().string();
+//                                    Log.d("Resposne:", resp);
+//                                    LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
+//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+//                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
+//                                    getActivity().startActivity(myIntent);
+//                                }
+//                            }
+//                        });
                     } else { // Handle missing password
                         Toast.makeText(getContext(), R.string.empty_password, Toast.LENGTH_SHORT).show();
                     }
@@ -128,6 +154,15 @@ public class Login extends Fragment {
                             .addToBackStack("tag_login")
                             .commit();
                 }
+            }
+        });
+
+        view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cart cart = new Cart();
+                Intent i = new Intent(getActivity(),cart.getClass());
+                startActivity(i);
             }
         });
     }
