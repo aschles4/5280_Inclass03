@@ -91,7 +91,7 @@ public class Login extends Fragment {
                         client.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(view.getContext(), "Error with request", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -103,9 +103,13 @@ public class Login extends Fragment {
                                     Log.d("Resposne:", resp);
                                     LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
                                     Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-                                    getActivity().startActivity(myIntent);
-                                }
+                                    try {
+                                        myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
+                                        getActivity().startActivity(myIntent);
+                                    }catch(Exception e){
+//                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
+                                    }
+                                    }
                             }
                         });
 
