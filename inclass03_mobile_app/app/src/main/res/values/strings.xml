@@ -74,6 +74,9 @@
     <string name="weight_hint">Weight</string>
     <string name="address">Address</string>
     <string name="temp_topayment">Payment</string>
+    <string name="name">name</string>
+    <string name="price">price</string>
+    <string name="purchase">Purchase</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
