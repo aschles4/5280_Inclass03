@@ -108,7 +108,7 @@ public class Login extends Fragment {
                                     Log.d("Resposne:", resp);
                                     LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
 
-//                                    createCustomer(loginResponse);
+                                    createCustomer(/*loginResponse*/);
 
                                 }
                             }

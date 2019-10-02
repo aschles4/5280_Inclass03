@@ -129,7 +129,7 @@ public class Signup extends Fragment {
                                 }
 
                                 @Override
-                                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
                                     if (!response.isSuccessful()) {
                                         throw new IOException("Unexpected code " + response);
                                     } else {
@@ -167,10 +167,11 @@ public class Signup extends Fragment {
 //                                            }
 //                                        });
 
-                                        Log.d(TAG, "This is the response from signup: " + response.body().string());
+
 
                                         getActivity().runOnUiThread(new Runnable() {
                                             public void run() {
+                                                Log.d(TAG, "This is the response from signup: " + response.body().toString());
                                                 Toast.makeText(getContext(), "User Signed Up Successfully", Toast.LENGTH_SHORT).show();
                                             }
                                         });
