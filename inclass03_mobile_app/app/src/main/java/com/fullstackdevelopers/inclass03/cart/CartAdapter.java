@@ -68,7 +68,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
             String price = String.valueOf(product.getPrice());
             holder.productPrice.setText(price);
             try {
-                Picasso.get().load("https://square.github.io/picasso/static/sample.png").into(holder.cartImage);
+                Picasso.get().load(product.getUrl()).into(holder.cartImage);
             } catch (Exception e) {
                 holder.cartImage.setImageResource(R.drawable.ic_account_circle_24px);
             }

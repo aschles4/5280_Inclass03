@@ -12,10 +12,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.R;
-import com.fullstackdevelopers.inclass03.cart.Cart;
 import com.fullstackdevelopers.inclass03.dto.LoginRequest;
 import com.fullstackdevelopers.inclass03.dto.LoginResponse;
+import com.fullstackdevelopers.inclass03.services.GetHttp;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,6 +31,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Login extends Fragment {
@@ -37,6 +40,8 @@ public class Login extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View view;
     private Gson gson;
+    private final String TAG = "Login";
+    private MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public Login() {
     }
@@ -83,6 +88,7 @@ public class Login extends Fragment {
                         loginRequest.setPassword(p);
 
                         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(loginRequest));
+                        System.out.println(requestBody.toString());
                         Request request = new Request.Builder()
                                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login")
                                 .post(requestBody)
@@ -91,7 +97,11 @@ public class Login extends Fragment {
                         client.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Toast.makeText(view.getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(view.getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
 
                             @Override
@@ -102,14 +112,12 @@ public class Login extends Fragment {
                                     String resp =  response.body().string();
                                     Log.d("Resposne:", resp);
                                     LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
-                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-                                    try {
-                                        myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-                                        getActivity().startActivity(myIntent);
-                                    }catch(Exception e){
-//                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
-                                    }
-                                    }
+//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+//                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
+//                                    getActivity().startActivity(myIntent);
+                                    createCustomer(loginResponse);
+
+                                }
                             }
                         });
 
@@ -164,9 +172,64 @@ public class Login extends Fragment {
         view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Cart cart = new Cart();
-                Intent i = new Intent(getActivity(),cart.getClass());
-                startActivity(i);
+                LoginResponse loginResponse = new LoginResponse();
+                createCustomer(loginResponse);
+//                Purchase cart = new Purchase();
+//                Intent i = new Intent(getActivity(),cart.getClass());
+//                startActivity(i);
+            }
+        });
+    }
+
+    /**
+     * This method creates a new customer if the first call to create a customer fails
+     */
+    public void createCustomer(final LoginResponse loginResponse) {
+
+
+        final Gson gson = new Gson();
+        RequestBody requestBody;
+        JsonObject objCust = new JsonObject();
+        objCust.addProperty("id","129742");
+//        objCust.addProperty("firstName","A");
+//        objCust.addProperty("lastName", "M");
+//        objCust.addProperty("email","am@blahsae.com");
+
+        final String custObj = gson.toJson(objCust);
+
+        Log.d(TAG, "The result after gson: " + custObj);
+
+        requestBody = RequestBody.create(JSON, custObj);
+        Request request = new Request.Builder()
+                .url(" https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_client")
+                .post(requestBody)
+                .build();
+
+        GetHttp createUser = new GetHttp(request);
+        createUser.setGetRespListener(new GetHttp.GetRespListener() {
+            @Override
+            public void r(Response res) {
+                if ( res != null ) {
+//                    try {
+                        Log.d(TAG, "The result createCustomer is: " + res.toString());
+//                        JSONObject jsonObject = new JSONObject(res.body().string());
+//                        JSONObject jsonObject1 = jsonObject.getJSONObject("token");
+//
+//                        JSONObject jsonObject2 = jsonObject1.getJSONObject("customer");
+//                        Log.d(TAG, "The result createCustomer is: " + jsonObject2.toString());
+//                        String customer = gson.toJson(jsonObject2);
+
+                        Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+                        try {
+                            myIntent.putExtra("token", /*loginResponse.getToken()*/ custObj); //Optional parameters
+                            getActivity().startActivity(myIntent);
+                        }catch(Exception e){
+//                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
+                        }
+//                    } catch ( IOException  e) {
+//                        e.printStackTrace();
+//                    }
+                }
             }
         });
     }
