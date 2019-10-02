@@ -210,6 +210,9 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
                     i.putExtra("token", token);
                     i.putExtra("price",String.valueOf(cart.getTotalPrice()));
                     startActivity(i);
+                    Cart empty = new Cart(cart.getUid(),"UID",new ArrayList<Product>(),0);
+                    cartAdapter(cart);
+                    cartValue(empty);
 
                 } catch (Exception e) {
                     e.printStackTrace();
