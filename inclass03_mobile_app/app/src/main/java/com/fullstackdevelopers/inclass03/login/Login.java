@@ -174,16 +174,16 @@ public class Login extends Fragment {
             }
         });
 
-        view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginResponse loginResponse = new LoginResponse();
-                createCustomer(loginResponse);
-//                Purchase cart = new Purchase();
-//                Intent i = new Intent(getActivity(),cart.getClass());
-//                startActivity(i);
-            }
-        });
+//        view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                LoginResponse loginResponse = new LoginResponse();
+//                createCustomer(loginResponse);
+////                Purchase cart = new Purchase();
+////                Intent i = new Intent(getActivity(),cart.getClass());
+////                startActivity(i);
+//            }
+//        });
     }
 
     /**
