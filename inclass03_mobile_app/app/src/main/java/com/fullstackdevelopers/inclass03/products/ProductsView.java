@@ -198,8 +198,6 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView = view.findViewById(R.id.productsList);
         recyclerView.setLayoutManager(layoutManager);
-
-
         //Start of Test Data
 //        for (int i = 0; i < 5; i++) {
 //            Product knees = new Product();

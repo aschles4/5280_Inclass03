@@ -117,6 +117,7 @@ public class Login extends Fragment {
 //                                    getActivity().startActivity(myIntent);
                                     createCustomer(loginResponse);
 
+
                                 }
                             }
                         });

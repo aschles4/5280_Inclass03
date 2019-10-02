@@ -257,6 +257,7 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
                         opt.addProperty("submitForSettlement",true);
                         String options = gson.toJson(opt);
                         JsonObject j = new JsonObject();
+                        Log.d(TAG, "The c " + c);
                         j.addProperty("amount", price);
                         j.addProperty("paymentMethodNonce", c);
                         j.addProperty("options",options);
@@ -308,8 +309,14 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d(TAG, "This is the response in sale " + response);
-//                goHome();
+                Log.d(TAG, "This is the response in sale " + response.body().string());
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        goHome();
+                    }
+
+                });
+
             }
         });
 
