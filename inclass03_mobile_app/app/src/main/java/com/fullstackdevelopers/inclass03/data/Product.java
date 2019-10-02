@@ -1,23 +1,21 @@
 package com.fullstackdevelopers.inclass03.data;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 public class Product implements Serializable {
     private String id;
     private String name;
     private double price;
-    private Bitmap image;
+    private String url;
 
     public Product() {
     }
 
-    public Product(String id, String name, String description, double price, Bitmap image) {
+    public Product(String id, String name, String description, double price, String url) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.image = image;
+        this.url = url;
     }
 
     public String getId() {
@@ -45,12 +43,12 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String getUrl() {
+        return url;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
@@ -59,7 +57,7 @@ public class Product implements Serializable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", image=" + image +
+                ", url=" + url +
                 '}';
     }
 }

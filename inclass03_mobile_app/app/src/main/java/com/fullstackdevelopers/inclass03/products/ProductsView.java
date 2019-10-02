@@ -3,6 +3,7 @@ package com.fullstackdevelopers.inclass03.products;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +16,19 @@ import com.fullstackdevelopers.inclass03.cart.CartView;
 import com.fullstackdevelopers.inclass03.data.Cart;
 import com.fullstackdevelopers.inclass03.data.Product;
 import com.fullstackdevelopers.inclass03.profile.ProfileView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import androidx.annotation.Nullable;
@@ -29,11 +36,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.BufferedSink;
+
 public class ProductsView extends Fragment implements ProductsAdapter.OnProductListener {
     private OnFragmentInteractionListener mListener;
     private View view;
     ArrayList<Product> products = new ArrayList<>();
     private String token;
+    private final String TAG = "ProductsView";
 
     public ProductsView() {
     }
@@ -46,6 +68,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -58,8 +81,46 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final Gson gson = new Gson();
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONObject prods = new JSONObject(response.body().string());
+                    JSONArray prodFromDB = prods.getJSONArray("products");
+
+                    Log.d(TAG, "This is the products array: " + products.toString());
+
+                    for ( int i = 0; i < prodFromDB.length(); i++ ) {
+                        Type productType = new TypeToken<Product>() {}.getType();
+                        Product p = gson.fromJson(prodFromDB.get(i).toString() ,productType);
+                        products.add(p);
+                        Log.d(TAG, "This is the products array: " + products.toString());
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            productList();
+                        }
+
+                    });
+
+                } catch ( IOException | JSONException e ) {
+
+                }
+            }
+        });
         bottomNav();
-        productList();
         Cart cart = getCart(getContext());
         Log.d("cart", cart.toString());
     }
@@ -137,14 +198,16 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView = view.findViewById(R.id.productsList);
         recyclerView.setLayoutManager(layoutManager);
+
+
         //Start of Test Data
-        for (int i = 0; i < 5; i++) {
-            Product knees = new Product();
-            knees.setId("" + i);
-            knees.setName("Product " + i);
-            knees.setPrice(42.69);
-            products.add(knees);
-        }
+//        for (int i = 0; i < 5; i++) {
+//            Product knees = new Product();
+//            knees.setId("" + i);
+//            knees.setName("Product " + i);
+//            knees.setPrice(42.69);
+//            products.add(knees);
+//        }
         //End of Test Data
         mAdapter = new ProductsAdapter(products, ProductsView.this);
         recyclerView.setAdapter(mAdapter);

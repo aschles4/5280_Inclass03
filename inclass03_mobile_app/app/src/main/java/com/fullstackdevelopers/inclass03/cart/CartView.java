@@ -1,6 +1,7 @@
 package com.fullstackdevelopers.inclass03.cart;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -204,6 +205,11 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
                     Toast toast = Toast.makeText(view.getContext(), "PURCHASE COST: " + (cart.getTotalPrice()), Toast.LENGTH_LONG);
                     toast.show();
                     Log.d("PURCHASE", String.valueOf(cart.getTotalPrice()));
+                    Purchase items = new Purchase();
+                    Intent i = new Intent(getActivity(),items.getClass());
+                    i.putExtra("token", token);
+                    i.putExtra("price",String.valueOf(cart.getTotalPrice()));
+                    startActivity(i);
 
                 } catch (Exception e) {
                     e.printStackTrace();

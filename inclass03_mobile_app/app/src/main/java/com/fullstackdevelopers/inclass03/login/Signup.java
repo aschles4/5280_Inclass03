@@ -20,7 +20,9 @@ import com.fullstackdevelopers.inclass03.dto.LoginRequest;
 import com.fullstackdevelopers.inclass03.dto.LoginResponse;
 import com.fullstackdevelopers.inclass03.dto.SignupRequest;
 import com.fullstackdevelopers.inclass03.profile.ProfileView;
+import com.fullstackdevelopers.inclass03.services.GetHttp;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,6 +39,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Signup extends Fragment {
@@ -44,6 +48,7 @@ public class Signup extends Fragment {
     private Bitmap pic;
     View view;
     private OnFragmentInteractionListener mListener;
+    private final String TAG = "Signup";
 
     public Signup() {
 
@@ -111,6 +116,11 @@ public class Signup extends Fragment {
                                     .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/signup")
                                     .post(requestBody)
                                     .build();
+                            Log.d(TAG, "reauest: " +request);
+
+                            Log.d(TAG, "request header: " +request.headers());
+
+                            Log.d(TAG, "Request body: " + request.body());
 
                             client.newCall(request).enqueue(new Callback() {
                                 @Override
@@ -156,6 +166,8 @@ public class Signup extends Fragment {
 //                                                }
 //                                            }
 //                                        });
+
+                                        Log.d(TAG, "This is the response from signup: " + response.body().string());
 
                                         getActivity().runOnUiThread(new Runnable() {
                                             public void run() {

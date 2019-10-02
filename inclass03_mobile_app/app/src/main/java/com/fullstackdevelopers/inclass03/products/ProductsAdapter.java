@@ -75,7 +75,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         String price = String.valueOf(product.getPrice());
         holder.productPrice.setText(price);
         try {
-            Picasso.get().load("https://square.github.io/picasso/static/sample.png").into(holder.productImage);
+            Picasso.get().load(product.getUrl()).into(holder.productImage);
 //            holder.productImage.setImageResource(R.drawable.ic_account_circle_24px);
         }catch (Exception e){
             holder.productImage.setImageResource(R.drawable.ic_account_circle_24px);
