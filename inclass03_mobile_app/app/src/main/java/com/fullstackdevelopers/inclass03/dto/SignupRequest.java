@@ -5,8 +5,8 @@ public class SignupRequest {
     String password;
     String firstname;
     String lastname;
-    String age;
-    String weight;
+    int age;
+    double weight;
     String address;
 
     public SignupRequest() {
@@ -44,19 +44,19 @@ public class SignupRequest {
         this.lastname = lastname;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public String getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

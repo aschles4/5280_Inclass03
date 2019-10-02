@@ -88,6 +88,7 @@ public class Login extends Fragment {
                         loginRequest.setPassword(p);
 
                         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(loginRequest));
+                        System.out.println(requestBody.toString());
                         Request request = new Request.Builder()
                                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login")
                                 .post(requestBody)
@@ -96,7 +97,11 @@ public class Login extends Fragment {
                         client.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Toast.makeText(view.getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(view.getContext(), "Error with request", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
 
                             @Override
@@ -107,8 +112,10 @@ public class Login extends Fragment {
                                     String resp =  response.body().string();
                                     Log.d("Resposne:", resp);
                                     LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
-
-//                                    createCustomer(loginResponse);
+//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+//                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
+//                                    getActivity().startActivity(myIntent);
+                                    createCustomer(loginResponse);
 
                                 }
                             }
@@ -165,7 +172,8 @@ public class Login extends Fragment {
         view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createCustomer(/*loginResponse*/);
+                LoginResponse loginResponse = new LoginResponse();
+                createCustomer(loginResponse);
 //                Purchase cart = new Purchase();
 //                Intent i = new Intent(getActivity(),cart.getClass());
 //                startActivity(i);
@@ -176,8 +184,7 @@ public class Login extends Fragment {
     /**
      * This method creates a new customer if the first call to create a customer fails
      */
-    public void createCustomer(/*final LoginResponse loginResponse*/) {
-
+    public void createCustomer(final LoginResponse loginResponse) {
 
 
         final Gson gson = new Gson();

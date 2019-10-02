@@ -105,8 +105,8 @@ public class Signup extends Fragment {
                             signupRequest.setFirstname(f);
                             signupRequest.setLastname(l);
                             signupRequest.setPassword(p);
-                            signupRequest.setAge(ageVal);
-                            signupRequest.setWeight(weightVal);
+                            signupRequest.setAge(Integer.parseInt(ageVal));
+                            signupRequest.setWeight(Double.parseDouble(weightVal));
                             signupRequest.setAddress(addressVal);
 
                             System.out.println(signupRequest.toString());
@@ -120,7 +120,8 @@ public class Signup extends Fragment {
 
                             Log.d(TAG, "request header: " +request.headers());
 
-                            Log.d(TAG, "Request body: " + request.body());
+                            Log.d(TAG, "Request body: " + gson.toJson(signupRequest));
+
 
                             client.newCall(request).enqueue(new Callback() {
                                 @Override
