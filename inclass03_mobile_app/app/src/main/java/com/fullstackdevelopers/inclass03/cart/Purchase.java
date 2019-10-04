@@ -102,7 +102,11 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
         requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(r));
         Request request = new Request.Builder()
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_token")
+<<<<<<< HEAD
                 .header("Authorization", authToken)
+=======
+                .addHeader("Authorization", "Bearer " + authToken)
+>>>>>>> 4e2fbd7df48594b3100a588363af7185d525ea6e
                 .post(requestBody)
                 .build();
         // This is the first call to create a clientToken to proceed with payment
@@ -174,7 +178,11 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
                 final RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(updateCustomerRequest));
                 final Request request = new Request.Builder()
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/update_client")
+<<<<<<< HEAD
                         .header("Authorization", "Bearer " + authToken)
+=======
+                        .addHeader("Authorization", "Bearer " + authToken)
+>>>>>>> 4e2fbd7df48594b3100a588363af7185d525ea6e
                         .post(requestBody)
                         .build();
 
@@ -223,7 +231,11 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
         final RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(createSaleRequest));
         final Request requestTrans = new Request.Builder()
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/sale")
+<<<<<<< HEAD
                 .header("Authorization", "Bearer " + authToken)
+=======
+                .addHeader("Authorization", "Bearer " + authToken)
+>>>>>>> 4e2fbd7df48594b3100a588363af7185d525ea6e
                 .post(requestBody)
                 .build();
 
