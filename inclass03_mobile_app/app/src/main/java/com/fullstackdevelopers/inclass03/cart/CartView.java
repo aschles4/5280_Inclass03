@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.products.ProductsView;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.data.Cart;
@@ -149,12 +150,16 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
         view.findViewById(R.id.nav_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment l = getFragmentManager().findFragmentByTag("tag_login");
-                Log.d("signup", "Return to login after frag l" + l);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_layout, l)
-                        .addToBackStack("tag_signup")
-                        .commit();
+//                Fragment l = getFragmentManager().findFragmentByTag("tag_login");
+//                Log.d("signup", "Return to login after frag l" + l);
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.main_layout, l)
+//                        .addToBackStack("tag_signup")
+//                        .commit();
+                HomeActivity home = new HomeActivity();
+                Intent i = new Intent(getContext(),home.getClass());
+                i.putExtra("token",token);
+                startActivity(i);
             }
         });
     }
@@ -205,14 +210,17 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
                     Toast toast = Toast.makeText(view.getContext(), "PURCHASE COST: " + (cart.getTotalPrice()), Toast.LENGTH_LONG);
                     toast.show();
                     Log.d("PURCHASE", String.valueOf(cart.getTotalPrice()));
+
+                    Log.d("PURCHASE", "" + token);
+
+                    Cart empty = new Cart(cart.getUid(),"UID",new ArrayList<Product>(),0);
+                    cartValue(empty);
+                    updateCart(getContext(),"CART",empty);
                     Purchase items = new Purchase();
                     Intent i = new Intent(getActivity(),items.getClass());
                     i.putExtra("token", token);
                     i.putExtra("price",String.valueOf(cart.getTotalPrice()));
                     startActivity(i);
-                    Cart empty = new Cart(cart.getUid(),"UID",new ArrayList<Product>(),0);
-                    cartAdapter(cart);
-                    cartValue(empty);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -235,6 +243,13 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
             badge.setVisibility(View.INVISIBLE);
             cartValue.setVisibility(View.INVISIBLE);
         }
+    }
+    public void updateCart(Context context, String key, Object object) throws IOException {
+        FileOutputStream fos = context.openFileOutput(key, Context.MODE_PRIVATE);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(object);
+        oos.close();
+        fos.close();
     }
 }
 
