@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.products.ProductsView;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.data.Cart;
@@ -151,12 +152,11 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
         view.findViewById(R.id.nav_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment l = getFragmentManager().findFragmentByTag("tag_login");
-                Log.d("signup", "Return to login after frag l" + l);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_layout, l)
-                        .addToBackStack("tag_signup")
-                        .commit();
+            HomeActivity home = new HomeActivity();
+            Intent i = new Intent(getContext(),home.getClass());
+            i.putExtra("customerId",customerId);
+            i.putExtra("authToken",authToken);
+            startActivity(i);
             }
         });
     }
