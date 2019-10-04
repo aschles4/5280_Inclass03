@@ -73,15 +73,13 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
         RequestBody requestBody;
 
         v = findViewById(android.R.id.content);
-//        JsonObject objCust = new JsonObject();
-//        objCust.addProperty("id","dFhtU9wM");
-//
-//        String someObj = gson.toJson(objCust);
+
         Log.d(TAG, "The objKey: " + token);
 
         requestBody = RequestBody.create(JSON,token);
         Request request = new Request.Builder()
-                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_token")
+//                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_token")
+                .url("http://10.0.2.2:8383/client_token_withCred")
                 .post(requestBody)
                 .build();
         // This is the first call to create a clientToken to proceed with payment
@@ -93,17 +91,36 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
             public void r(Response res) {
                 if ( res != null ) {
                     try {
-                        JSONObject jObj = new JSONObject(res.body().string());
-                        Log.d(TAG, "Made it in first call to get token: " + jObj.toString());
-//                        JSONObject jObj2 = jObj.getJSONObject("token");
-//                        Log.d(TAG, "Made it in first call to get token: " + jObj2.get("success"));
-                        if ( jObj.get("success").equals(false) ) {
-                            Log.d(TAG, "Something went wrong, need to investigate!");
-                        } else {
-                            clientToken = jObj.getString("clientToken");
-                            Log.d(TAG, "Customer exists going to UI with clientToken: " + clientToken);
 
-                            onBraintreeSubmit(clientToken, v);
+                        String result = res.body().string();
+                        Log.d(TAG, "Made it in first call to get token with result : " + result);
+                        final JSONObject jObj = new JSONObject(result);
+                        Log.d(TAG, "Made it in first call to get token with JSONObject : " + jObj.toString());
+                        final JSONObject jObj2 = jObj.getJSONObject("token");
+                        Log.d(TAG, "Made it in first call to get token: " + jObj2.get("success"));
+                        if ( jObj2.get("success").equals(false) ) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d(TAG, "Something went wrong, need to investigate!");
+                                }
+                            });
+
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        clientToken = jObj2.getString("clientToken");
+                                        Log.d(TAG, "Customer exists going to UI with clientToken: " + clientToken);
+
+                                        onBraintreeSubmit(clientToken, v);
+                                    } catch ( JSONException e ) {
+
+                                    }
+                                }
+                            });
+
                         }
                     } catch ( JSONException | IOException e ) {
                         e.printStackTrace();
@@ -223,7 +240,7 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
         Log.d(TAG, "Inside onActivityResult" + resultCode);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                final DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
 
                 Gson gson = new GsonBuilder().serializeNulls().create();
 
@@ -231,41 +248,57 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
 
                 OkHttpClient client = new OkHttpClient();
 
-                Log.d(TAG, "This is the payment info: " + result.getPaymentMethodNonce() + " json object: "  + result.toString());
+//                Log.d(TAG, "This is the payment info: " + result.getPaymentMethodNonce() + " json object: "  + result.toString());
                 final String c = gson.toJson(result);
+                final String x = gson.toJson(result.getPaymentMethodNonce().getNonce());
+                JsonObject j = new JsonObject();
+                Log.d(TAG, "The x " + x);
+                j.addProperty("amount", price);
+                j.addProperty("paymentMethodNonce", x.replaceAll("\"", ""));
+//                        j.addProperty("options",options);
+                String payment = gson.toJson(j);
+                RequestBody r = RequestBody.create(JSON,payment);
+                makeSale(r);
+//                Log.d(TAG, "The total result: " + x);
 
-                Log.d(TAG, "The total result: " + c);
+//                final JsonObject newPayment = new JsonObject();
+//                newPayment.addProperty("id",token);
+//                newPayment.addProperty("paymentMethodNonce", c);
 
-                final JsonObject newPayment = new JsonObject();
-                newPayment.addProperty("id","dFhtU9wM");
-                newPayment.addProperty("paymentMethodNonce", c);
+//                String d = gson.toJson(newPayment);
 
-                String d = gson.toJson(newPayment);
-
-                final RequestBody requestBody = RequestBody.create(JSON, d);
-                final Request request = new Request.Builder()
-                        .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/update_client")
-                        .post(requestBody)
-                        .build();
-                GetHttp updateClient = new GetHttp(request);
-                updateClient.setGetRespListener(new GetHttp.GetRespListener() {
-                    @Override
-                    public void r(Response res) {
-                        Gson gson = new Gson();
-                        Log.d(TAG, "The response on update: " + res);
-                        JsonObject opt = new JsonObject();
-                        opt.addProperty("submitForSettlement",true);
-                        String options = gson.toJson(opt);
-                        JsonObject j = new JsonObject();
-                        Log.d(TAG, "The c " + c);
-                        j.addProperty("amount", price);
-                        j.addProperty("paymentMethodNonce", c);
-                        j.addProperty("options",options);
-                        String payment = gson.toJson(j);
-                        RequestBody req = RequestBody.create(JSON,payment);
-                        makeSale(req);
-                    }
-                });
+//                final RequestBody requestBody = RequestBody.create(JSON, d);
+//                final Request request = new Request.Builder()
+////                        .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/update_client")
+//                        .url("http://10.0.2.2:8383/update_client")
+//                        .post(requestBody)
+//                        .build();
+//                GetHttp updateClient = new GetHttp(request);
+//                updateClient.setGetRespListener(new GetHttp.GetRespListener() {
+//                    @Override
+//                    public void r(Response res) {
+//                        try {
+//                            String result = res.body().string();
+//                            JSONObject resu = new JSONObject(result);
+//                            Log.d(TAG, "The error from saveCard " + result);
+////                            if ( resu.getJSONObject("error").getString("name").equals("unexpectedError") ) {
+//                                Gson gson = new Gson();
+////                        Log.d(TAG, "The response on update: " + res);
+//                                JsonObject j = new JsonObject();
+//                                Log.d(TAG, "The x " + x);
+//                                j.addProperty("amount", price);
+//                                j.addProperty("paymentMethodNonce", x.replaceAll("\"", ""));
+////                        j.addProperty("options",options);
+//                                String payment = gson.toJson(j);
+//                                Log.d(TAG, "The payment " + payment);
+//                                RequestBody req = RequestBody.create(JSON, payment);
+//                                makeSale(req);
+////                            }
+//                        } catch ( IOException | JSONException e ) {
+//
+//                        }
+//                    }
+//                });
                 // use the result to update your UI and send the payment method nonce to your server
             } else if (resultCode == RESULT_CANCELED) {
                 // the user canceled
@@ -283,23 +316,10 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
     public void makeSale(RequestBody requestBody) {
         OkHttpClient client = new OkHttpClient();
         final Request requestTrans = new Request.Builder()
-                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/sale")
+//                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/sale")
+                .url("http://10.0.2.2:8383/sale")
                 .post(requestBody)
                 .build();
-
-//        GetHttp commitTransaction = new GetHttp(requestTrans);
-//        commitTransaction.setGetRespListener(new GetHttp.GetRespListener() {
-//            @Override
-//            public void r(Response res) {
-//                Log.d(TAG, "This is the response in sale " + res);
-//                if ( res.code() == 200 ) {
-//                    goHome();
-//                } else {
-//
-//                }
-////
-//            }
-//        });
 
         client.newCall(requestTrans).enqueue(new Callback() {
             @Override
@@ -308,11 +328,16 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Log.d(TAG, "This is the response in sale " + response.body().string());
+            public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        goHome();
+//                        try {
+                            Log.d(TAG, "This is the response in sale " + response.body().toString());
+                            goHome();
+//                        } catch ( IOException e ) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                 });

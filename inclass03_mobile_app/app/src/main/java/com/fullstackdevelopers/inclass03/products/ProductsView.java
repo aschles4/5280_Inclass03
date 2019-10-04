@@ -106,7 +106,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
                         Type productType = new TypeToken<Product>() {}.getType();
                         Product p = gson.fromJson(prodFromDB.get(i).toString() ,productType);
                         products.add(p);
-                        Log.d(TAG, "This is the products array: " + products.toString());
+//                        Log.d(TAG, "This is the products array: " + products.toString());
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {

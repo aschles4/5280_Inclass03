@@ -205,6 +205,7 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
                     Toast toast = Toast.makeText(view.getContext(), "PURCHASE COST: " + (cart.getTotalPrice()), Toast.LENGTH_LONG);
                     toast.show();
                     Log.d("PURCHASE", String.valueOf(cart.getTotalPrice()));
+                    Log.d("PURCHASE", "" + token);
                     Purchase items = new Purchase();
                     Intent i = new Intent(getActivity(),items.getClass());
                     i.putExtra("token", token);
