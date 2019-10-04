@@ -115,13 +115,11 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
 
         Request request = new Request.Builder()
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
-
                 .header("Authorization", "One " + authToken)
                 .build();
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
