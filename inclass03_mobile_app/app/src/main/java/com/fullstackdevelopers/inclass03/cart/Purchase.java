@@ -95,14 +95,14 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
 //        objCust.addProperty("id","dFhtU9wM");
 //
 //        String someObj = gson.toJson(objCust);
-        Log.d(TAG, "The objKey: " + customerId);
+        Log.d(TAG, "The objKey: " + authToken);
 
         CreateClientTokenRequest r = new CreateClientTokenRequest(customerId);
 
         requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(r));
         Request request = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_token")
+                .header("Authorization", authToken)
                 .post(requestBody)
                 .build();
         // This is the first call to create a clientToken to proceed with payment
@@ -164,7 +164,7 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
             if (resultCode == RESULT_OK) {
                 final DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
 
-                isCreated = false;
+//                isCreated = false;
 
                 OkHttpClient client = new OkHttpClient();
                 System.out.println(gson.toJson(result.getPaymentMethodNonce()));
@@ -173,8 +173,8 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
                 UpdateCustomerRequest updateCustomerRequest = new UpdateCustomerRequest(customerId, result.getPaymentMethodNonce());
                 final RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(updateCustomerRequest));
                 final Request request = new Request.Builder()
-                        .addHeader("Authorization", "Bearer " + authToken)
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/update_client")
+                        .header("Authorization", "Bearer " + authToken)
                         .post(requestBody)
                         .build();
 
@@ -222,8 +222,8 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
         CreateSaleRequest createSaleRequest = new CreateSaleRequest(paymentMethodNonce, price, options);
         final RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(createSaleRequest));
         final Request requestTrans = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/sale")
+                .header("Authorization", "Bearer " + authToken)
                 .post(requestBody)
                 .build();
 

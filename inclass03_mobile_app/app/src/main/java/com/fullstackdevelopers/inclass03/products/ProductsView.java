@@ -13,11 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fullstackdevelopers.inclass03.HomeActivity;
+import com.fullstackdevelopers.inclass03.MainActivity;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.cart.CartView;
 import com.fullstackdevelopers.inclass03.data.Cart;
 import com.fullstackdevelopers.inclass03.data.Product;
+import com.fullstackdevelopers.inclass03.dto.FindUserProfileResponse;
 import com.fullstackdevelopers.inclass03.profile.ProfileView;
+import com.fullstackdevelopers.inclass03.services.InterceptResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -45,6 +48,7 @@ import org.json.JSONObject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -85,12 +89,37 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Bundle b = getArguments();
+        authToken = b.getString("authToken");
+        customerId = b.getString("customerId");
+        FindUserProfileResponse userProfileResponse = (FindUserProfileResponse) b.getSerializable("profile");
+        Log.d(TAG, "this is the stuff: " + userProfileResponse + " authToken " + authToken);
         final Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
+//        String url = "https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts";
+//        OkHttpClient newClient = new OkHttpClient.Builder()
+//                .addInterceptor(new InterceptResponse(url,authToken,null))
+//                .build();
+
+        Interceptor interceptor = new Interceptor() {
+            @NotNull
+            @Override
+            public okhttp3.Response intercept(@NotNull Chain chain) throws IOException {
+                Request request = chain.request();
+                Request newRequest = request.newBuilder()
+                        .addHeader("Authorization","Bearer " + authToken)
+                        .build();
+
+                return chain.proceed(newRequest);
+            }
+        };
 
         Request request = new Request.Builder()
-                .addHeader("Authorization", "One  " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
+                .header("Authorization", authToken)
+                .build();
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -186,7 +215,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity home = new HomeActivity();
+                MainActivity home = new MainActivity();
                 Intent i = new Intent(getContext(),home.getClass());
                 i.putExtra("customerId",customerId);
                 i.putExtra("authToken",authToken);

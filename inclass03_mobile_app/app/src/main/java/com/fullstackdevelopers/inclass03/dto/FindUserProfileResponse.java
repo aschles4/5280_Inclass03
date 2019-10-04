@@ -1,6 +1,8 @@
 package com.fullstackdevelopers.inclass03.dto;
 
-public class FindUserProfileResponse {
+import java.io.Serializable;
+
+public class FindUserProfileResponse implements Serializable {
     int userID;
     String email;
     String password;

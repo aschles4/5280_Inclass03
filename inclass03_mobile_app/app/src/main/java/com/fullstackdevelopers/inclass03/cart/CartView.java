@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fullstackdevelopers.inclass03.HomeActivity;
+import com.fullstackdevelopers.inclass03.MainActivity;
 import com.fullstackdevelopers.inclass03.products.ProductsView;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.data.Cart;
@@ -152,7 +153,7 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
         view.findViewById(R.id.nav_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            HomeActivity home = new HomeActivity();
+            MainActivity home = new MainActivity();
             Intent i = new Intent(getContext(),home.getClass());
             i.putExtra("customerId",customerId);
             i.putExtra("authToken",authToken);
