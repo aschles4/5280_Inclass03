@@ -78,8 +78,8 @@ public class ProfileView extends Fragment {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(findUserProfileRequest));
         Request request = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProfile")
+                .addHeader("Authorization", "Bearer " + authToken)
                 .post(requestBody)
                 .build();
 
@@ -131,8 +131,8 @@ public class ProfileView extends Fragment {
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(editUserProfileRequest));
                 Request request = new Request.Builder()
-                        .addHeader("Authorization", "Bearer " + authToken)
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/editProfile")
+                        .addHeader("Authorization", "Bearer " + authToken)
                         .post(requestBody)
                         .build();
 
@@ -187,8 +187,8 @@ public class ProfileView extends Fragment {
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(logoutRequest));
                 Request request = new Request.Builder()
-                        .addHeader("Authorization", "Bearer " + authToken)
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/logout")
+                        .addHeader("Authorization", "Bearer " + authToken)
                         .post(requestBody)
                         .build();
 

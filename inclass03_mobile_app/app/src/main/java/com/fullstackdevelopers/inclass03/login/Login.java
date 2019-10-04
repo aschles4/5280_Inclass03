@@ -169,8 +169,8 @@ public class Login extends Fragment {
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(createCustomerRequest));
             System.out.println(requestBody.toString());
             Request request = new Request.Builder()
-                    .addHeader("Authorization", "Bearer " + loginResponse.getToken())
                     .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/createclient")
+                    .addHeader("Authorization", "Bearer " + loginResponse.getToken())
                     .post(requestBody)
                     .build();
 
