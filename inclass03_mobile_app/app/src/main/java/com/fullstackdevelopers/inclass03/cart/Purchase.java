@@ -1,5 +1,6 @@
 package com.fullstackdevelopers.inclass03.cart;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,8 @@ import com.braintreepayments.api.models.BraintreePaymentResult;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.cardform.view.CardForm;
 import com.fullstackdevelopers.inclass03.HomeActivity;
+import com.fullstackdevelopers.inclass03.data.Cart;
+import com.fullstackdevelopers.inclass03.data.Product;
 import com.fullstackdevelopers.inclass03.services.GetHttp;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,7 +45,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class Purchase extends AppCompatActivity implements BraintreePaymentResultListener, BraintreeErrorListener,
         BraintreeCancelListener, BraintreeListener {
@@ -350,6 +356,8 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
 
     public void goHome() {
 //        Toast.makeText(getApplicationContext(),"Thanks for your purchase!",Toast.LENGTH_LONG);
+        Cart empty = new Cart("0","UID",new ArrayList<Product>(),0);
+//        updateCart(empty);
         HomeActivity home = new HomeActivity();
         Intent i = new Intent(getApplicationContext(),home.getClass());
         i.putExtra("token",token);
@@ -386,6 +394,14 @@ public class Purchase extends AppCompatActivity implements BraintreePaymentResul
     public void onBraintreePaymentResult(BraintreePaymentResult result) {
 
     }
+    public void updateCart(Context context, String key, Object object) throws IOException {
+        FileOutputStream fos = context.openFileOutput(key, Context.MODE_PRIVATE);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(object);
+        oos.close();
+        fos.close();
+    }
+
 
 
 }

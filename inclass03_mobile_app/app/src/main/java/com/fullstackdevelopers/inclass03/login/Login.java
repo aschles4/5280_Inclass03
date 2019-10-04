@@ -13,15 +13,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.R;
+import com.fullstackdevelopers.inclass03.dto.FindUserProfileResponse;
 import com.fullstackdevelopers.inclass03.dto.LoginRequest;
 import com.fullstackdevelopers.inclass03.dto.LoginResponse;
 import com.fullstackdevelopers.inclass03.dto.User;
+import com.fullstackdevelopers.inclass03.dto.SignupRequest;
 import com.fullstackdevelopers.inclass03.services.GetHttp;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.nimbusds.jwt.JWTParser;
 
+//import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.Jwts;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -226,6 +230,7 @@ public class Login extends Fragment {
         final Gson gson = new Gson();
         RequestBody requestBody;
         JsonObject objCust = new JsonObject();
+
         objCust.addProperty("id",u.getUserID());
         objCust.addProperty("firstName",u.getFirstName());
         objCust.addProperty("lastName", u.getLastName());
