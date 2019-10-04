@@ -1,6 +1,7 @@
 package com.fullstackdevelopers.inclass03.products;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.cart.CartView;
 import com.fullstackdevelopers.inclass03.data.Cart;
@@ -181,12 +183,16 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment l = getFragmentManager().findFragmentByTag("tag_login");
-                Log.d("signup", "Return to login after frag l" + l);
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_layout, l)
-                        .addToBackStack("tag_signup")
-                        .commit();
+//                Fragment l = getFragmentManager().findFragmentByTag("tag_login");
+//                Log.d("signup", "Return to login after frag l" + l);
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.main_layout, l)
+//                        .addToBackStack("tag_signup")
+//                        .commit();
+                HomeActivity home = new HomeActivity();
+                Intent i = new Intent(getContext(),home.getClass());
+                i.putExtra("token",token);
+                startActivity(i);
             }
         });
     }

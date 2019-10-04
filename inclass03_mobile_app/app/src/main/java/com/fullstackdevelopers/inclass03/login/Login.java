@@ -242,8 +242,8 @@ public class Login extends Fragment {
 
         requestBody = RequestBody.create(JSON, custObj);
         Request request = new Request.Builder()
-//                .url(" https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_client")
-                .url("http://10.0.2.2:8383/create_client_withCred")     //                .url(" https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_client")
+                .url(" https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_client")
+//                .url("http://10.0.2.2:8383/create_client_withCred")     //                .url(" https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_client")
                 .post(requestBody)
                 .build();
 
@@ -263,8 +263,8 @@ public class Login extends Fragment {
                                 String temp = res.body().string();
                                 Log.d(TAG, "The result createCustomer is: " + temp);
                                 JSONObject jsonObject = new JSONObject(temp);
-                                JSONObject jsonObjectToken = jsonObject.getJSONObject("token");
-                                String success =  jsonObjectToken.getString("success");
+//                                JSONObject jsonObjectToken = jsonObject.getJSONObject("token");
+                                String success =  jsonObject.getString("success");
                                 Log.d(TAG, "The success is: " + success);
                                 if ( success.equals("false") ) {
                                     Log.d(TAG, "Made it inside success=false");
@@ -276,20 +276,20 @@ public class Login extends Fragment {
         //                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
-//                                    JSONObject jsonObj = new JSONObject(res.body().string());
-//                                    JSONObject jsonObject1 = jsonObj.getJSONObject("token");
-//
-//                                    JSONObject jsonObject2 = jsonObject1.getJSONObject("customer");
-//                                    Log.d(TAG, "The result createCustomer is: " + jsonObject2.toString());
-//                                    String customer = gson.toJson(jsonObject2);
+                                    JSONObject jsonObj = new JSONObject(res.body().string());
+                                    JSONObject jsonObject1 = jsonObj.getJSONObject("token");
 
-//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-//                                    try {
-//                                        myIntent.putExtra("token",  custObj); //Optional parameters
-//                                        getActivity().startActivity(myIntent);
-//                                    }catch(Exception e){
-//        //                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
-//                                    }
+                                    JSONObject jsonObject2 = jsonObject1.getJSONObject("customer");
+                                    Log.d(TAG, "The result createCustomer is: " + jsonObject2.toString());
+                                    String customer = gson.toJson(jsonObject2);
+
+                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
+                                    try {
+                                        myIntent.putExtra("token",  customer); //Optional parameters
+                                        getActivity().startActivity(myIntent);
+                                    }catch(Exception e){
+        //                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             } catch ( IOException | JSONException e ) {
 
