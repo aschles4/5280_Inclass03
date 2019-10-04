@@ -54,15 +54,15 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     private OnFragmentInteractionListener mListener;
     private View view;
     ArrayList<Product> products = new ArrayList<>();
-    private String token;
+    private String customerId;
     private final String TAG = "ProductsView";
 
     public ProductsView() {
     }
 
     //Not sure what to do with Token, but got it
-    public ProductsView(String token) {
-        this.token = token;
+    public ProductsView(String customerId) {
+        this.customerId = customerId;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
                         Type productType = new TypeToken<Product>() {}.getType();
                         Product p = gson.fromJson(prodFromDB.get(i).toString() ,productType);
                         products.add(p);
-                        Log.d(TAG, "This is the products array: " + products.toString());
+//                        Log.d(TAG, "This is the products array: " + products.toString());
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
@@ -159,7 +159,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_cart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartView p = new CartView(token);
+                CartView p = new CartView(customerId);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.home_layout, p, "tag_cart_view")
                         .addToBackStack("tag_products_view")
@@ -170,7 +170,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProfileView p = new ProfileView(token);
+            ProfileView p = new ProfileView(customerId);
             getFragmentManager().beginTransaction()
                     .replace(R.id.home_layout, p, "tag_profile_view")
                     .addToBackStack("tag_products_view")

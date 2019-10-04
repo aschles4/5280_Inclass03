@@ -32,15 +32,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class ProfileView extends Fragment {
     OnFragmentInteractionListener mListener;
-    String token;
+    String customerId;
     View view;
     OkHttpClient client;
     Gson gson;
 
-    public ProfileView(String token) {
+    public ProfileView(String customerId) {
         client = new OkHttpClient();
         gson = new Gson();
-        this.token = token;
+        this.customerId = customerId;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ProfileView extends Fragment {
         //TODO Call user profile endpoint
 
         final FindUserProfileRequest findUserProfileRequest = new FindUserProfileRequest();
-        findUserProfileRequest.setToken(token);
+        findUserProfileRequest.setToken(customerId);
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(findUserProfileRequest));
         Request request = new Request.Builder()
@@ -149,7 +149,7 @@ public class ProfileView extends Fragment {
                 Log.d("profile", "Edit user profile");
 
                 final EditUserProfileRequest editUserProfileRequest = new EditUserProfileRequest();
-                editUserProfileRequest.setToken(token);
+                editUserProfileRequest.setToken(customerId);
                 editUserProfileRequest.setFirstname(fName.getText().toString());
                 editUserProfileRequest.setLastname(lName.getText().toString());
                 editUserProfileRequest.setEmail(email.getText().toString());
@@ -211,7 +211,7 @@ public class ProfileView extends Fragment {
             @Override
             public void onClick(View v) {
                 final LogoutRequest logoutRequest = new LogoutRequest();
-                logoutRequest.setToken(token);
+                logoutRequest.setToken(customerId);
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(logoutRequest));
                 Request request = new Request.Builder()
