@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.braintreepayments.api:drop-in:4.4.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.apache.commons:commons-text:1.6'
 }

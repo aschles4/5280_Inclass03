@@ -35,13 +35,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CartView extends Fragment implements CartAdapter.OnProductListener {
     private OnFragmentInteractionListener mListener;
     private View view;
-    private String token;
+    private String customerId;
 
     public CartView() {
     }
 
-    public CartView(String token) {
-        this.token = token;
+    public CartView(String customerId) {
+        this.customerId = customerId;
     }
 
     @Override
@@ -138,7 +138,7 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
         view.findViewById(R.id.nav_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileView p = new ProfileView(token);
+                ProfileView p = new ProfileView(customerId);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.home_layout, p, "tag_profile_view")
                         .addToBackStack("tag_products_view")
@@ -210,7 +210,7 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
                     updateCart(getContext(),"CART",empty);
                     Purchase items = new Purchase();
                     Intent i = new Intent(getActivity(),items.getClass());
-                    i.putExtra("token", token);
+                    i.putExtra("customerId", customerId);
                     i.putExtra("price",String.valueOf(cart.getTotalPrice()));
                     startActivity(i);
 
