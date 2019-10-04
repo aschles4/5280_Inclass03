@@ -131,6 +131,7 @@ public class ProfileView extends Fragment {
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(editUserProfileRequest));
                 Request request = new Request.Builder()
+                        .addHeader("Authorization", "Bearer " + authToken)
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/editProfile")
                         .post(requestBody)
                         .build();
@@ -182,10 +183,11 @@ public class ProfileView extends Fragment {
             @Override
             public void onClick(View v) {
                 final LogoutRequest logoutRequest = new LogoutRequest();
-                logoutRequest.setToken(customerId);
+                logoutRequest.setToken(authToken);
 
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(logoutRequest));
                 Request request = new Request.Builder()
+                        .addHeader("Authorization", "Bearer " + authToken)
                         .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/logout")
                         .post(requestBody)
                         .build();
