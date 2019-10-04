@@ -134,42 +134,6 @@ public class Signup extends Fragment {
                                     if (!response.isSuccessful()) {
                                         throw new IOException("Unexpected code " + response);
                                     } else {
-                                        //TODO insert login call here
-//                                        final LoginRequest loginRequest = new LoginRequest();
-//                                        loginRequest.setEmail(e);
-//                                        loginRequest.setPassword(p);
-//
-//                                        RequestBody requestBody2 = RequestBody.create(MediaType.parse("application/json"), gson.toJson(loginRequest));
-//                                        Request request2 = new Request.Builder()
-//                                                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login")
-//                                                .post(requestBody2)
-//                                                .build();
-//
-//
-//                                        client.newCall(request2).enqueue(new Callback() {
-//                                            @Override
-//                                            public void onFailure(Request request, IOException e) {
-//                                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
-//                                            }
-//
-//                                            @Override
-//                                            public void onResponse(Response response) throws IOException {
-//                                                if (!response.isSuccessful()) {
-//                                                    throw new IOException("Unexpected code " + response);
-//                                                } else {
-//                                                    //TODO PUSH TO PROFILE PAGE
-//
-//                                                    LoginResponse loginResponse = gson.fromJson(response.body().string(), LoginResponse.class);
-//                                                    Log.d("test", loginResponse.toString());
-//                                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-//                                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-//                                                    getActivity().startActivity(myIntent);
-//                                                }
-//                                            }
-//                                        });
-
-
-
                                         getActivity().runOnUiThread(new Runnable() {
                                             public void run() {
                                                 Log.d(TAG, "This is the response from signup: " + response.body().toString());
@@ -181,62 +145,6 @@ public class Signup extends Fragment {
                                 }
 
                             });
-
-
-//                            client.newCall(request).enqueue(new Callback() {
-//                                @Override
-//                                public void onFailure(Request request, IOException e) {
-//                                    Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
-//                                }
-//
-//                                @Override
-//                                public void onResponse(Response response) throws IOException {
-//                                    if (!response.isSuccessful()) {
-//                                        throw new IOException("Unexpected code " + response);
-//                                    } else {
-//                                        //TODO insert login call here
-////                                        final LoginRequest loginRequest = new LoginRequest();
-////                                        loginRequest.setEmail(e);
-////                                        loginRequest.setPassword(p);
-////
-////                                        RequestBody requestBody2 = RequestBody.create(MediaType.parse("application/json"), gson.toJson(loginRequest));
-////                                        Request request2 = new Request.Builder()
-////                                                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/login")
-////                                                .post(requestBody2)
-////                                                .build();
-////
-////
-////                                        client.newCall(request2).enqueue(new Callback() {
-////                                            @Override
-////                                            public void onFailure(Request request, IOException e) {
-////                                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
-////                                            }
-////
-////                                            @Override
-////                                            public void onResponse(Response response) throws IOException {
-////                                                if (!response.isSuccessful()) {
-////                                                    throw new IOException("Unexpected code " + response);
-////                                                } else {
-////                                                    //TODO PUSH TO PROFILE PAGE
-////
-////                                                    LoginResponse loginResponse = gson.fromJson(response.body().string(), LoginResponse.class);
-////                                                    Log.d("test", loginResponse.toString());
-////                                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-////                                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-////                                                    getActivity().startActivity(myIntent);
-////                                                }
-////                                            }
-////                                        });
-//
-//                                        getActivity().runOnUiThread(new Runnable() {
-//                                            public void run() {
-//                                                Toast.makeText(getContext(), "User Signed Up Successfully", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        });
-//
-//                                    }
-//                                }
-//                            });
                         } else {
                             Toast.makeText(getContext(), "Password  mismatch", Toast.LENGTH_SHORT).show();
                             password.setText("");

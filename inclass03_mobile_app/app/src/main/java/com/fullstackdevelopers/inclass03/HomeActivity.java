@@ -27,8 +27,9 @@ public class HomeActivity extends AppCompatActivity implements Login.OnFragmentI
 
         Intent intent = getIntent();
         String customerId = (String) intent.getSerializableExtra("customerId");
+        String authToken = (String) intent.getSerializableExtra("authToken");
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.home_layout, new ProductsView(customerId), "tag_products_view")
+                .add(R.id.home_layout, new ProductsView(customerId, authToken), "tag_products_view")
                 .commit();
     }
 

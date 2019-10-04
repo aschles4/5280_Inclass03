@@ -122,35 +122,10 @@ public class Login extends Fragment {
                                     String resp = response.body().string();
                                     Log.d("Response:", resp);
                                     LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
-//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-//                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-//                                    getActivity().startActivity(myIntent);
                                     createCustomer(loginResponse);
                                 }
                             }
                         });
-
-
-//                        client.newCall(request).enqueue(new Callback() {
-//                            @Override
-//                            public void onFailure(Request request, IOException e) {
-//                                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                            @Override
-//                            public void onResponse(Response response) throws IOException {
-//                                if (!response.isSuccessful()) {
-//                                    throw new IOException("Unexpected code " + response);
-//                                } else {
-//                                    String resp =  response.body().string();
-//                                    Log.d("Resposne:", resp);
-//                                    LoginResponse loginResponse = gson.fromJson(resp, LoginResponse.class);
-//                                    Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-//                                    myIntent.putExtra("token", loginResponse.getToken()); //Optional parameters
-//                                    getActivity().startActivity(myIntent);
-//                                }
-//                            }
-//                        });
                     } else { // Handle missing password
                         Toast.makeText(getContext(), R.string.empty_password, Toast.LENGTH_SHORT).show();
                     }
@@ -177,17 +152,6 @@ public class Login extends Fragment {
                 }
             }
         });
-
-//        view.findViewById(R.id.btn_temp).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LoginResponse loginResponse = new LoginResponse();
-//                createCustomer(loginResponse);
-////                Purchase cart = new Purchase();
-////                Intent i = new Intent(getActivity(),cart.getClass());
-////                startActivity(i);
-//            }
-//        });
     }
 
     /**
@@ -205,6 +169,7 @@ public class Login extends Fragment {
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(createCustomerRequest));
             System.out.println(requestBody.toString());
             Request request = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + loginResponse.getToken())
                     .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/createclient")
                     .post(requestBody)
                     .build();
@@ -222,10 +187,6 @@ public class Login extends Fragment {
                     if (!response.isSuccessful()) {
                         throw new IOException("Unexpected code " + response);
                     } else {
-//                    try {
-
-//                    String test = response.body().toString();
-//                    Log.d(TAG, "The result createCustomer is: " + response.toString());
                         String resp = response.body().string();
                         Log.d("Response", resp);
 
@@ -238,7 +199,7 @@ public class Login extends Fragment {
 
                         Intent myIntent = new Intent(getActivity(), HomeActivity.class);
                         myIntent.putExtra("customerId", createCustomerRequest.getId());
-                        myIntent.putExtra("accessToken", loginResponse.getToken());//Optional parameters
+                        myIntent.putExtra("authToken", loginResponse.getToken());//Optional parameters
                         getActivity().startActivity(myIntent);
 
                     }
@@ -248,36 +209,6 @@ public class Login extends Fragment {
             //TODO login failed pop notification
             e.printStackTrace();
         }
-
-
-
-
-//        createUser.setGetRespListener(new GetHttp.GetRespListener() {
-//            @Override
-//            public void r(Response res) {
-//                if ( res != null ) {
-////                    try {
-//                        Log.d(TAG, "The result createCustomer is: " + res.toString());
-////                        JSONObject jsonObject = new JSONObject(res.body().string());
-////                        JSONObject jsonObject1 = jsonObject.getJSONObject("token");
-////
-////                        JSONObject jsonObject2 = jsonObject1.getJSONObject("customer");
-////                        Log.d(TAG, "The result createCustomer is: " + jsonObject2.toString());
-////                        String customer = gson.toJson(jsonObject2);
-//
-//                        Intent myIntent = new Intent(getActivity(), HomeActivity.class);
-//                        try {
-//                            myIntent.putExtra("token", /*loginResponse.getToken()*/ custObj); //Optional parameters
-//                            getActivity().startActivity(myIntent);
-//                        }catch(Exception e){
-////                                        Toast.makeText(view.getContext(), "Unable to Login", Toast.LENGTH_SHORT).show();
-//                        }
-////                    } catch ( IOException  e) {
-////                        e.printStackTrace();
-////                    }
-//                }
-//            }
-//        });
     }
 
     @Override

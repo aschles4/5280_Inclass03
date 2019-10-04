@@ -55,14 +55,16 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     private View view;
     ArrayList<Product> products = new ArrayList<>();
     private String customerId;
+    private String authToken;
     private final String TAG = "ProductsView";
 
     public ProductsView() {
     }
 
     //Not sure what to do with Token, but got it
-    public ProductsView(String customerId) {
+    public ProductsView(String customerId, String authToken) {
         this.customerId = customerId;
+        this.authToken = authToken;
     }
 
     @Override
@@ -85,6 +87,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
                 .build();
 
@@ -159,7 +162,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_cart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartView p = new CartView(customerId);
+                CartView p = new CartView(customerId, authToken);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.home_layout, p, "tag_cart_view")
                         .addToBackStack("tag_products_view")
@@ -170,7 +173,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProfileView p = new ProfileView(customerId);
+            ProfileView p = new ProfileView(customerId, authToken);
             getFragmentManager().beginTransaction()
                     .replace(R.id.home_layout, p, "tag_profile_view")
                     .addToBackStack("tag_products_view")

@@ -33,14 +33,17 @@ import org.jetbrains.annotations.NotNull;
 public class ProfileView extends Fragment {
     OnFragmentInteractionListener mListener;
     String customerId;
+    private String authToken;
     View view;
     OkHttpClient client;
     Gson gson;
 
-    public ProfileView(String customerId) {
+    public ProfileView(String customerId, String authToken) {
+        this.customerId = customerId;
+        this.authToken = authToken;
         client = new OkHttpClient();
         gson = new Gson();
-        this.customerId = customerId;
+
     }
 
     @Override
@@ -75,6 +78,7 @@ public class ProfileView extends Fragment {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(findUserProfileRequest));
         Request request = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + authToken)
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProfile")
                 .post(requestBody)
                 .build();
@@ -109,39 +113,6 @@ public class ProfileView extends Fragment {
                 }
             }
         });
-
-
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//                Log.e("call", e.getMessage());
-//                Toast.makeText(getContext(), "Error with request", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                if (!response.isSuccessful()) {
-//                    throw new IOException("Unexpected code " + response);
-//                } else {
-//                    final FindUserProfileResponse findUserProfileResponse = gson.fromJson(response.body().string(), FindUserProfileResponse.class);
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        public void run() {
-//
-//                            Log.d("Fucked", findUserProfileResponse.toString());
-//                            fName.setText(findUserProfileResponse.getFirstName());
-//                            lName.setText(findUserProfileResponse.getLastName());
-//                            pass.setText(findUserProfileResponse.getPassword());
-//                            email.setText(findUserProfileResponse.getEmail());
-//                            age.setText(Integer.toString(findUserProfileResponse.getAge()));
-//                            weight.setText(Float.toString(findUserProfileResponse.getWeight()));
-//                            address.setText(findUserProfileResponse.getAddress());
-//                        }
-//                    });
-//
-//                }
-//            }
-//        });
-
 
         view.findViewById(R.id.btn_profile_edit).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -36,12 +36,14 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
     private OnFragmentInteractionListener mListener;
     private View view;
     private String customerId;
+    private String authToken;
 
     public CartView() {
     }
 
-    public CartView(String customerId) {
+    public CartView(String customerId, String authToken) {
         this.customerId = customerId;
+        this.authToken = authToken;
     }
 
     @Override
@@ -138,7 +140,7 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
         view.findViewById(R.id.nav_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileView p = new ProfileView(customerId);
+                ProfileView p = new ProfileView(customerId, authToken);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.home_layout, p, "tag_profile_view")
                         .addToBackStack("tag_products_view")
