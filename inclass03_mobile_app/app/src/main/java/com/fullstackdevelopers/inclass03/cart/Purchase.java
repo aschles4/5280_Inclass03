@@ -31,6 +31,7 @@ import com.fullstackdevelopers.inclass03.data.Product;
 import com.fullstackdevelopers.inclass03.dto.CreateClientTokenRequest;
 import com.fullstackdevelopers.inclass03.dto.CreateCustomerRequest;
 import com.fullstackdevelopers.inclass03.dto.CreateSaleRequest;
+import com.fullstackdevelopers.inclass03.dto.FindUserProfileResponse;
 import com.fullstackdevelopers.inclass03.dto.Options;
 import com.fullstackdevelopers.inclass03.dto.UpdateCustomerRequest;
 import com.fullstackdevelopers.inclass03.services.GetHttp;
@@ -45,6 +46,7 @@ import org.json.JSONObject;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -85,10 +87,26 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
 
         customerId = getIntent().getStringExtra("customerId");
         authToken = getIntent().getStringExtra("authToken");
-        price = getIntent().getStringExtra("price");
+//        price = getIntent().getStringExtra("price");
+        price = "5.45";
+        FindUserProfileResponse userProfileResponse = (FindUserProfileResponse) getIntent().getSerializableExtra("profile");
 
         gson = new Gson();
-        RequestBody requestBody;
+        final RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(userProfileResponse.getUserID()));
+
+        Interceptor interceptor = new Interceptor() {
+            @NotNull
+            @Override
+            public okhttp3.Response intercept(@NotNull Chain chain) throws IOException {
+                Request request = chain.request();
+                Request newRequest = request.newBuilder()
+                        .addHeader("Authorization","Bearer " + authToken)
+                        .post(requestBody)
+                        .build();
+
+                return chain.proceed(newRequest);
+            }
+        };
 
         v = findViewById(android.R.id.content);
 //        JsonObject objCust = new JsonObject();
@@ -97,24 +115,30 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
 //        String someObj = gson.toJson(objCust);
         Log.d(TAG, "The objKey: " + authToken);
 
-        CreateClientTokenRequest r = new CreateClientTokenRequest(customerId);
+//        CreateClientTokenRequest r = new CreateClientTokenRequest(customerId);
 
-        requestBody = RequestBody.create(MediaType.parse("application/json"), gson.toJson(r));
+
         Request request = new Request.Builder()
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/create_token")
                 .addHeader("Authorization", "Bearer " + authToken)
                 .post(requestBody)
                 .build();
-        // This is the first call to create a clientToken to proceed with payment
-        // If call fails could mean customer doesn't exist and so it passes
-        // to createCustomer(), if it succeeds, then it passes to onBraintreeSubmit()
-        GetHttp data = new GetHttp(request);
-        data.setGetRespListener(new GetHttp.GetRespListener() {
+
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void r(Response res) {
-                if ( res != null ) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if ( response != null ) {
                     try {
-                        JSONObject jObj = new JSONObject(res.body().string());
+                        String resp = response.body().string();
+                        Log.d(TAG, "The response in Purchase " + resp);
+
+                        JSONObject jObj = new JSONObject(resp);
                         Log.d(TAG, "Made it in first call to get token: " + jObj.toString());
 //                        JSONObject jObj2 = jObj.getJSONObject("token");
 //                        Log.d(TAG, "Made it in first call to get token: " + jObj2.get("success"));
@@ -132,6 +156,37 @@ public class Purchase extends AppCompatActivity implements PaymentMethodNonceCre
                 }
             }
         });
+
+
+
+
+        // This is the first call to create a clientToken to proceed with payment
+        // If call fails could mean customer doesn't exist and so it passes
+        // to createCustomer(), if it succeeds, then it passes to onBraintreeSubmit()
+//        GetHttp data = new GetHttp(request);
+//        data.setGetRespListener(new GetHttp.GetRespListener() {
+//            @Override
+//            public void r(Response res) {
+//                if ( res != null ) {
+//                    try {
+//                        JSONObject jObj = new JSONObject(res.body().string());
+//                        Log.d(TAG, "Made it in first call to get token: " + jObj.toString());
+////                        JSONObject jObj2 = jObj.getJSONObject("token");
+////                        Log.d(TAG, "Made it in first call to get token: " + jObj2.get("success"));
+//                        if ( jObj.get("success").equals(false) ) {
+//                            Log.d(TAG, "Something went wrong, need to investigate!");
+//                        } else {
+//                            clientToken = jObj.getString("clientToken");
+//                            Log.d(TAG, "Customer exists going to UI with clientToken: " + clientToken);
+//
+//                            onBraintreeSubmit(clientToken, v);
+//                        }
+//                    } catch ( JSONException | IOException e ) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
     }
 
     /**

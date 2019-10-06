@@ -115,7 +115,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
 
         Request request = new Request.Builder()
                 .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
-                .header("Authorization", "One " + authToken)
+                .header("Authorization", "Bearer " + authToken)
                 .build();
 
         OkHttpClient client = new OkHttpClient.Builder()
@@ -125,16 +125,20 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    JSONObject prods = new JSONObject(response.body().string());
+                    String resp = response.body().string();
+
+                    Log.d(TAG, "The response in products is: " + resp);
+
+                    JSONObject prods = new JSONObject(resp);
                     JSONArray prodFromDB = prods.getJSONArray("products");
 
-                    Log.d(TAG, "This is the products array: " + products.toString());
+                    Log.d(TAG, "This is the products array: " + prods);
 
                     for ( int i = 0; i < prodFromDB.length(); i++ ) {
                         Type productType = new TypeToken<Product>() {}.getType();
