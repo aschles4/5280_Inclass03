@@ -33,5 +33,7 @@ dependencies {
     implementation 'com.braintreepayments.api:braintree:3.6.0'
     implementation 'com.braintreepayments.api:drop-in:4.4.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "com.squareup.sdk.in-app-payments:card-entry:1.2.0"
+
 
 }
