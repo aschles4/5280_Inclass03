@@ -1,7 +1,13 @@
 package com.fullstackdevelopers.inclass03.products;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
@@ -11,6 +17,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.estimote.coresdk.common.config.EstimoteSDK;
+import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
+import com.estimote.coresdk.recognition.packets.Beacon;
+import com.estimote.coresdk.service.BeaconManager;
+import com.fullstackdevelopers.inclass03.HomeActivity;
 import com.fullstackdevelopers.inclass03.R;
 import com.fullstackdevelopers.inclass03.cart.CartView;
 import com.fullstackdevelopers.inclass03.data.Cart;
@@ -19,6 +30,7 @@ import com.fullstackdevelopers.inclass03.profile.ProfileView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileInputStream;
@@ -32,6 +44,7 @@ import java.util.List;
 import java.util.UUID;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,10 +63,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
+import static com.estimote.coresdk.common.config.EstimoteSDK.getApplicationContext;
+
 public class ProductsView extends Fragment implements ProductsAdapter.OnProductListener {
     private OnFragmentInteractionListener mListener;
     private View view;
-    ArrayList<Product> products = new ArrayList<>();
     private String token;
     private final String TAG = "ProductsView";
 
@@ -81,48 +95,11 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    JSONObject prods = new JSONObject(response.body().string());
-                    JSONArray prodFromDB = prods.getJSONArray("products");
-
-                    Log.d(TAG, "This is the products array: " + products.toString());
-
-                    for ( int i = 0; i < prodFromDB.length(); i++ ) {
-                        Type productType = new TypeToken<Product>() {}.getType();
-                        Product p = gson.fromJson(prodFromDB.get(i).toString() ,productType);
-                        products.add(p);
-                        Log.d(TAG, "This is the products array: " + products.toString());
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            productList();
-                        }
-
-                    });
-
-                } catch ( IOException | JSONException e ) {
-
-                }
-            }
-        });
+        beacons();
         bottomNav();
         Cart cart = getCart(getContext());
-        Log.d("cart", cart.toString());
+        cartValue(cart);
+//        Log.d("cart", cart.toString());
     }
 
 
@@ -155,7 +132,6 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     }
 
     public void bottomNav() {
-
         view.findViewById(R.id.nav_cart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,11 +146,11 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         view.findViewById(R.id.nav_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProfileView p = new ProfileView(token);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.home_layout, p, "tag_profile_view")
-                    .addToBackStack("tag_products_view")
-                    .commit();
+                ProfileView p = new ProfileView(token);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.home_layout, p, "tag_profile_view")
+                        .addToBackStack("tag_products_view")
+                        .commit();
 
             }
         });
@@ -192,21 +168,12 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     }
 
     //Initialze the RecyclerView and Currently uses a test data set
-    public void productList() {
+    public void productList(ArrayList<Product> products) {
         RecyclerView recyclerView;
         RecyclerView.Adapter mAdapter;
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView = view.findViewById(R.id.productsList);
         recyclerView.setLayoutManager(layoutManager);
-        //Start of Test Data
-//        for (int i = 0; i < 5; i++) {
-//            Product knees = new Product();
-//            knees.setId("" + i);
-//            knees.setName("Product " + i);
-//            knees.setPrice(42.69);
-//            products.add(knees);
-//        }
-        //End of Test Data
         mAdapter = new ProductsAdapter(products, ProductsView.this);
         recyclerView.setAdapter(mAdapter);
     }
@@ -260,5 +227,166 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         }
     }
 
+    public void getProducts(String type) {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final Gson gson = new Gson();
+        final JsonObject selectType = new JsonObject();
+        selectType.addProperty("type", type);
+        String d = gson.toJson(selectType);
+        final RequestBody requestBody = RequestBody.create(JSON, d);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("https://ooelz49nm4.execute-api.us-east-1.amazonaws.com/default/findProducts")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d("testFail", e.toString());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    JSONObject prods = new JSONObject(response.body().string());
+                    JSONArray prodFromDB = prods.getJSONArray("products");
+                    final ArrayList<Product> products = new ArrayList<>();
+
+                    Log.d(TAG, "This is the products array: " + products.toString());
+
+                    for (int i = 0; i < prodFromDB.length(); i++) {
+                        Type productType = new TypeToken<Product>() {
+                        }.getType();
+                        Product p = gson.fromJson(prodFromDB.get(i).toString(), productType);
+                        products.add(p);
+                        Log.d(TAG, "This is the products array: " + products.toString());
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            productList(products);
+                        }
+
+                    });
+
+                } catch (IOException | JSONException e) {
+                    Log.d("test", e.toString());
+                }
+            }
+        });
+
+    }
+
+    public void beacons() {
+        EstimoteSDK.initialize(getContext(), "proximityapp-fz8", "e8c7919f9f977891f9657eb768154767");
+        final BeaconManager beaconManager = new BeaconManager(getContext());
+//        beaconManager.setForegroundScanPeriod(13, 10);
+        final BeaconRegion region = new BeaconRegion("monitored region",
+                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
+        beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
+            int count = 0;
+
+            @Override
+            public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
+                if (!list.isEmpty()) {
+                    Beacon nearestBeacon = list.get(0);
+                    // TODO: update the UI here
+                    Log.d(TAG, "Nearest places: " + nearestBeacon.getMeasuredPower() + count);
+                    count += 1;
+                    if (nearestBeacon.getMinor() == 46246) {
+                        getProducts("produce");
+                    }
+                    if (nearestBeacon.getMajor() ==45849 ) {
+                        getProducts("grocery");
+                    }
+
+                }
+            }
+        });
+        // connects beacon manager to underlying service
+//        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+//            @Override
+//            public void onServiceReady() {
+//                beaconManager.startMonitoring(new BeaconRegion(
+//                        "monitored region",
+////                       UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
+//                        null,
+//                        null, null));
+//            }
+//
+//            ;
+//        });
+//        beaconManager.setMonitoringListener(new BeaconManager.BeaconMonitoringListener() {
+//            @Override
+//            public void onEnteredRegion(BeaconRegion region, List<Beacon> beacons) {
+//                Log.d("testRegion",region.toString());
+//                Log.d("testBEACON", beacons.toString());
+//                Beacon beacon = beacons.get(0);
+//                if(beacon.getMinor()==46246){
+//                    getProducts("produce");
+//                }
+//                if(beacon.getMinor()==1003 && beacon.getMinor()==1000){
+//                    getProducts("grocery");
+//                }
+//            }
+//            @Override
+//            public void onExitedRegion(BeaconRegion region) {
+//                // could add an "exit" notification too if you want (-:
+//            }
+//        });
+    }
+
+    public void createNotification(String aMessage, Context context) {
+        NotificationManager notifManager = null;
+        final int NOTIFY_ID = 0; // ID of notification
+        String id = context.getString(R.string.default_notification_channel_id); // default_channel_id
+        String title = context.getString(R.string.default_notification_channel_title); // Default Channel
+        Intent intent;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder;
+
+        builder = new NotificationCompat.Builder(context, id);
+        intent = new Intent(context, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText(context.getString(R.string.app_name)) // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+
+        if (notifManager == null) {
+            notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+
+            if (mChannel == null) {
+                mChannel = new NotificationChannel(id, title, importance);
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notifManager.createNotificationChannel(mChannel);
+            }
+
+        } else {
+
+            builder.setPriority(Notification.PRIORITY_HIGH);
+
+        }
+        Notification notification = builder.build();
+        notifManager.notify(NOTIFY_ID, notification);
+    }
 
 }

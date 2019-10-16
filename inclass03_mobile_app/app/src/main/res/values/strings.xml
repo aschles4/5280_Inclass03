@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">User App</string>
+    <string name="app_name">Cart App</string>
     <string name="dl_title">Download Url</string>
     <string name="caption_title">Add a Caption:</string>
     <string name="caption_hint">Caption</string>
@@ -77,7 +77,8 @@
     <string name="name">name</string>
     <string name="price">price</string>
     <string name="purchase">Purchase</string>
-
+    <string name="default_notification_channel_id">mychannel</string>
+    <string name="default_notification_channel_title">mychannel_title</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

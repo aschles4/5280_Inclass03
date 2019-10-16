@@ -228,6 +228,8 @@ public class CartView extends Fragment implements CartAdapter.OnProductListener 
     }
 
     public void cartValue(Cart cart) {
+        TextView totalCost = view.findViewById(R.id.totalCost);
+        totalCost.setText("total cost: "+cart.getTotalPrice());
         ImageView badge = view.findViewById(R.id.cartSize);
         TextView cartValue = view.findViewById(R.id.cartValue);
         ArrayList<Product> products = cart.getProducts();
