@@ -67,7 +67,7 @@ public class Login extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+       // ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         final OkHttpClient client = new OkHttpClient();
         final Gson gson = new Gson();
 

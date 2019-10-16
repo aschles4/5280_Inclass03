@@ -6,22 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".products.ProductsView">
 
+    <include
+        android:id="@+id/include"
+        layout="@layout/top_nav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartList"
         android:layout_width="412dp"
         android:layout_height="470dp"
         app:layout_constraintBottom_toBottomOf="@+id/productViewDesc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/productViewDesc"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintVertical_bias="0.0" />
 
     <include
         android:id="@+id/productViewDesc"
         layout="@layout/bottom_nav_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
     <Button
         android:id="@+id/purchaseButton"

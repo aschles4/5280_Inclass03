@@ -53,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -278,6 +279,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
     }
 
     public void beacons() {
+        final TextView title= view.findViewById(R.id.region);
         EstimoteSDK.initialize(getContext(), "proximityapp-fz8", "e8c7919f9f977891f9657eb768154767");
         final BeaconManager beaconManager = new BeaconManager(getContext());
 //        beaconManager.setForegroundScanPeriod(13, 10);
@@ -290,57 +292,39 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
             }
         });
         beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
-            int count = 0;
+            Boolean countProduce = true, countGrocery = true;
 
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     Beacon nearestBeacon = list.get(0);
                     // TODO: update the UI here
-                    Log.d(TAG, "Nearest places: " + nearestBeacon.getMeasuredPower() + count);
-                    count += 1;
+                    Log.d(TAG, "Nearest places: " + nearestBeacon.getMeasuredPower());
                     if (nearestBeacon.getMinor() == 46246) {
-                        getProducts("produce");
+                        if (countProduce) {
+                            getProducts("produce");
+                            createNotification("Entered Produce", getContext());
+                            countProduce = false;
+                            countGrocery = true;
+                            title.setText(getString(R.string.produce));
+                        }
                     }
-                    if (nearestBeacon.getMajor() ==45849 ) {
-                        getProducts("grocery");
+                    if (nearestBeacon.getMajor() == 45849) {
+                        if (countGrocery) {
+                            getProducts("grocery");
+                            createNotification("Entered Grocery", getContext());
+                            countGrocery = false;
+                            countProduce = true;
+                            title.setText(getString(R.string.grocery));
+
+
+                        }
                     }
 
                 }
             }
         });
-        // connects beacon manager to underlying service
-//        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-//            @Override
-//            public void onServiceReady() {
-//                beaconManager.startMonitoring(new BeaconRegion(
-//                        "monitored region",
-////                       UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
-//                        null,
-//                        null, null));
-//            }
-//
-//            ;
-//        });
-//        beaconManager.setMonitoringListener(new BeaconManager.BeaconMonitoringListener() {
-//            @Override
-//            public void onEnteredRegion(BeaconRegion region, List<Beacon> beacons) {
-//                Log.d("testRegion",region.toString());
-//                Log.d("testBEACON", beacons.toString());
-//                Beacon beacon = beacons.get(0);
-//                if(beacon.getMinor()==46246){
-//                    getProducts("produce");
-//                }
-//                if(beacon.getMinor()==1003 && beacon.getMinor()==1000){
-//                    getProducts("grocery");
-//                }
-//            }
-//            @Override
-//            public void onExitedRegion(BeaconRegion region) {
-//                // could add an "exit" notification too if you want (-:
-//            }
-//        });
-    }
+          }
 
     public void createNotification(String aMessage, Context context) {
         NotificationManager notifManager = null;

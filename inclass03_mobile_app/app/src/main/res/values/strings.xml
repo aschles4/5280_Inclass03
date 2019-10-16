@@ -79,6 +79,8 @@
     <string name="purchase">Purchase</string>
     <string name="default_notification_channel_id">mychannel</string>
     <string name="default_notification_channel_title">mychannel_title</string>
+    <string name="produce">Produce</string>
+    <string name="grocery">Grocery</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

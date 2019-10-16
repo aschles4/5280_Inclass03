@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements Login.OnFragmentI
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_layout, new Login(), "tag_login")
                 .commit();
+
     }
 
 

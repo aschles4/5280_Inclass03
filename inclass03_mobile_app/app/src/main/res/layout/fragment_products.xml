@@ -6,13 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".products.ProductsView">
 
+    <include layout="@layout/top_nav" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsList"
         android:layout_width="match_parent"
         android:layout_height="585dp"
         app:layout_constraintBottom_toBottomOf="@+id/productViewDesc"
         app:layout_constraintTop_toTopOf="@+id/productViewDesc"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:layoutAnimation="@anim/layout_animation"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <include
         android:id="@+id/productViewDesc"
