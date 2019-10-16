@@ -297,9 +297,21 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 if (!list.isEmpty()) {
-                    Beacon nearestBeacon = list.get(0);
+                    
+                    Beacon nearestBeacon = null;
+                    for ( Beacon b : list ) {
+                        if ( b.getMajor() == 45849 ) {
+                            nearestBeacon = b;
+                        } else if ( b.getMinor() == 46246 ) {
+                            nearestBeacon = b;
+                        }
+                    }
+
+//                    Beacon nearestBeacon = list.get(0);
                     // TODO: update the UI here
-                    Log.d(TAG, "Nearest places: " + nearestBeacon.getMeasuredPower());
+                    Log.d(TAG, "Nearest beacon major: " + nearestBeacon.getMajor() +
+                            " nearest beacon minor " + nearestBeacon.getMinor());
+
                     if (nearestBeacon.getMinor() == 46246) {
                         if (countProduce) {
                             getProducts("produce");
