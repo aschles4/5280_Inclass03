@@ -41,6 +41,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.UUID;
 
 import androidx.annotation.Nullable;
@@ -282,6 +283,7 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
         final TextView title= view.findViewById(R.id.region);
         EstimoteSDK.initialize(getContext(), "proximityapp-fz8", "e8c7919f9f977891f9657eb768154767");
         final BeaconManager beaconManager = new BeaconManager(getContext());
+        beaconManager.setForegroundScanPeriod(13, 10);
 //        beaconManager.setForegroundScanPeriod(13, 10);
         final BeaconRegion region = new BeaconRegion("monitored region",
                 UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
@@ -292,51 +294,79 @@ public class ProductsView extends Fragment implements ProductsAdapter.OnProductL
             }
         });
         beaconManager.setRangingListener(new BeaconManager.BeaconRangingListener() {
-            Boolean countProduce = true, countGrocery = true;
+            Boolean countProduce = true, countGrocery = true, countLifestyle = true;
 
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
-                if (!list.isEmpty()) {
-                    
-                    Beacon nearestBeacon = null;
-                    for ( Beacon b : list ) {
-                        if ( b.getMajor() == 45849 ) {
-                            nearestBeacon = b;
-                        } else if ( b.getMinor() == 46246 ) {
-                            nearestBeacon = b;
-                        }
-                    }
 
-//                    Beacon nearestBeacon = list.get(0);
+                Log.d(TAG, "The region is: " + region);
+
+                Beacon lastBeacon = null;
+
+                if (!list.isEmpty()) {
+
+//                    Beacon nearestBeacon = null;
+//                    for ( Beacon b : list ) {
+//                        if ( b.getMajor() ==  47152) {
+//                            nearestBeacon = b;
+//                            break;
+//                        } else if ( b.getMajor() == 41072 ) {
+//                            nearestBeacon = b;
+//                            break;
+//                        } else if ( b.getMajor() == 15326 ) {
+//                            nearestBeacon = b;
+//                        }
+//                    }
+
+
+
+                    Beacon nearestBeacon = list.get(0);
                     // TODO: update the UI here
                     Log.d(TAG, "Nearest beacon major: " + nearestBeacon.getMajor() +
                             " nearest beacon minor " + nearestBeacon.getMinor());
 
-                    if (nearestBeacon.getMinor() == 46246) {
+                    if (nearestBeacon.getMajor() == 41072) {
                         if (countProduce) {
                             getProducts("produce");
                             createNotification("Entered Produce", getContext());
                             countProduce = false;
                             countGrocery = true;
+                            countLifestyle = true;
                             title.setText(getString(R.string.produce));
                         }
-                    }
-                    if (nearestBeacon.getMajor() == 45849) {
+                    } else if (nearestBeacon.getMajor() == 47152) {
                         if (countGrocery) {
                             getProducts("grocery");
                             createNotification("Entered Grocery", getContext());
                             countGrocery = false;
                             countProduce = true;
+                            countLifestyle = true;
                             title.setText(getString(R.string.grocery));
-
-
+                            lastBeacon = nearestBeacon;
+                        }
+                    } else if (nearestBeacon.getMajor() == 15326) {
+                        if (countLifestyle) {
+                            getProducts("lifestyle");
+                            createNotification("Entered Lifestyle", getContext());
+                            countGrocery = false;
+                            countProduce = true;
+                            countLifestyle = false;
+                            title.setText(getString(R.string.lifestyle));
+                            lastBeacon = nearestBeacon;
                         }
                     }
 
+                } else {
+                    productList(new ArrayList<Product>());
+                    createNotification("Entered Lifestyle", getContext());
+                    countGrocery = true;
+                    countProduce = true;
+                    countLifestyle = true;
+                    title.setText("");
                 }
             }
         });
-          }
+    }
 
     public void createNotification(String aMessage, Context context) {
         NotificationManager notifManager = null;
