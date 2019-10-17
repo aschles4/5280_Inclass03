@@ -81,6 +81,8 @@
     <string name="default_notification_channel_title">mychannel_title</string>
     <string name="produce">Produce</string>
     <string name="grocery">Grocery</string>
+    <string name="type">%1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lifestyle">Lifestyle</string>
 </resources>
