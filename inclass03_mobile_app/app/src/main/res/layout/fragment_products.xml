@@ -7,7 +7,17 @@
     tools:context=".products.ProductsView">
 
     <include layout="@layout/top_nav" />
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
 
+        <ProgressBar
+            android:layout_width="172dp"
+            android:layout_height="167dp"
+            android:indeterminate="true" />
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productsList"
         android:layout_width="match_parent"
